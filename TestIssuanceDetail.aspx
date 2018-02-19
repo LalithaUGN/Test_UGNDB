@@ -883,77 +883,77 @@
                 </SelectParameters>
             </asp:ObjectDataSource>
         </asp:View>
-        <asp:View ID="vwSupportingDoc" runat="server">
-                <br />
-                <asp:Panel ID="SDPanel" runat="server" CssClass="collapsePanelHeader" Width="680px">
-                    <asp:Image ID="imgSD" runat="server" AlternateText="expand" ImageUrl="~/images/expand_blue.jpg" Height="12px" />&nbsp;
-                    <asp:Label ID="lblSD" runat="server" Text="SUPPORTING DOCUMENT(S):" CssClass="c_textbold" />
-                </asp:Panel>
-                <asp:Panel ID="SDContentPanel" runat="server" CssClass="collapsePanel" Width="800px">
-                    <asp:Label ID="lblSupDoc" runat="server" CssClass="p_smalltextbold" Style="width: 800px; color: #990000" Text="This section is available as an option to include additional information. *.PDF, *.DOC, *.DOCX, *.XLS and *.XLSX files are allowed for upload up to 4MB each." /><br />
-                    <asp:Label ID="lblSupDoc2" runat="server" CssClass="p_smalltextbold" Style="width: 800px; color: #990000" Text="NOTE: Please be sure to upload the latest copy of any document. Any changes you make will not be saved to the upload files. Please be sure to make a copy of the file locally and upload a new version. You have the option to delete or keep previous version of the file for reference. Please use the 'File Description' area to comment on the changes you make." />
-                    <table>
-                        <tr>
-                            <td class="p_text">
-                                <asp:Label ID="lblUploadBy" runat="server" Text="Upload By:" />
-                            </td>
-                            <td class="c_text">
-                                <asp:DropDownList ID="ddTeamMember" runat="server" />
-                                <asp:RequiredFieldValidator ID="rfvTeamMember" runat="server" ControlToValidate="ddTeamMember" ErrorMessage="Team Member is a required field." Font-Bold="False" ValidationGroup="vsSupportingDocuments" Text="<" ForeColor="Red" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="p_text" style="vertical-align: top">
-                                <asp:Label ID="lblFileDescription" runat="server" Text="File Description:" />
-                            </td>
-                            <td class="c_text">
-                                <asp:TextBox ID="txtFileDesc" runat="server" MaxLength="200" Rows="3" TextMode="MultiLine" Width="600px" />
-                                <asp:RequiredFieldValidator ID="rfvFileDesc" runat="server" ControlToValidate="txtFileDesc" ErrorMessage="File Description is a required field." Font-Bold="False" ValidationGroup="vsSupportingDocuments" Text="<" ForeColor="Red" /><br />
-                                <asp:Label ID="lblFileDescChar" runat="server" Font-Bold="True" ForeColor="Red" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="p_text" style="vertical-align: top">
-                                <asp:Label ID="lblSupportingDocument" runat="server" Text="Supporting Document:" />
-                            </td>
-                            <td class="c_text">
-                                <asp:FileUpload ID="FileUpload1" runat="server" Height="22px" Width="600px" />
-                                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="uploadFile" ErrorMessage="Supporting Document is required." Font-Bold="False" ValidationGroup="vsSupportingDocuments" Text="<" ForeColor="Red" /><br />
-                                <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ErrorMessage="Only *.PDF, *.DOC, *.DOCX, *.XLS, *.XLSX files are allowed!" ValidationExpression="(([a-zA-Z]:)|(\\{2}\w+)\$?)(\\(\w[\w].*))+(.pdf|.xls|.doc|.xlsx|.docx|.PDF|.XLS|.DOC|.XLSX|.DOCX)$" ControlToValidate="uploadFile" ValidationGroup="vsSupportingDocuments" Font-Bold="True" Font-Size="Small" /><br />
-                                <asp:Label ID="Label12" runat="server" Font-Bold="True" ForeColor="Red" Height="16px" Text="Label" Visible="False" Width="541px" Font-Size="Small" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="height: 27px"></td>
-                            <td style="height: 27px">
-                                <asp:Button ID="Button1" runat="server" Text="Upload" CausesValidation="true" ValidationGroup="vsSupportingDocuments" />
-                                <asp:Button ID="btnResetUpload" runat="server" CausesValidation="False" Text="Reset" />
-                            </td>
-                        </tr>
-                    </table>
-                    <asp:ValidationSummary ID="vsSupDoc" runat="server" ValidationGroup="vsSupportingDocuments" ShowMessageBox="true" ShowSummary="true" ForeColor="Red" />
-                </asp:Panel>
-                <ajax:CollapsiblePanelExtender ID="SDExtender" runat="server" TargetControlID="SDContentPanel"
-                    ExpandControlID="SDPanel" CollapseControlID="SDPanel" Collapsed="FALSE" TextLabelID="lblSD"
-                    ExpandedText="SUPPORTING DOCUMENT(S):" CollapsedText="SUPPORTING DOCUMENT(S):"
-                    ImageControlID="imgSD" CollapsedImage="~/images/expand_blue.jpg" ExpandedImage="~/images/collapse_blue.jpg"
-                    SuppressPostBack="true"></ajax:CollapsiblePanelExtender>
-                <br />
-                <asp:GridView ID="gvSupportingDocument" runat="server" AutoGenerateColumns="False" Width="600px" SkinID="StandardGridWOFooter">
+       <%-- lalitha--%>
+         <asp:View ID="vSupportingDocuments" runat="server">
+                <table runat="server" id="tblUpload">
+                    <tr>
+                        <td class="p_text" style="vertical-align: top">File Description:
+                        </td>
+                        <td class="c_text">
+                            <asp:TextBox ID="txtSupportingDocDesc" runat="server" MaxLength="200" Width="600px" />
+                            <asp:RequiredFieldValidator ID="rfvSupportingDocDesc" runat="server" ControlToValidate="txtSupportingDocDesc" ErrorMessage="Supporting Document File Description is a required field." Font-Bold="False" ValidationGroup="vgSupportingDocs" SetFocusOnError="true" Text="<" ForeColor="red" /><br />
+                            <asp:Label ID="lblSupportingDocDescCharCount" runat="server" Font-Bold="True" ForeColor="Red" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p_text" style="vertical-align: top">Supporting Document:
+                        </td>
+                        <td style="white-space: nowrap;">
+                            <asp:FileUpload ID="uploadFileTest" runat="server" Height="22px" Width="600px" />
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="uploadFile"
+                                ErrorMessage="Supporting Document is required." Font-Bold="False" ValidationGroup="vsSupportingDocuments" Text="<" ForeColor="Red" /><br />
+                            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ErrorMessage="Please upload only *.PDF, *.DOC,*.DOCX, *.XLS, *.XLSX, *.JPEG, *.JPG, *.TIF, *.PPT, *.PPTX files are allowed." ValidationExpression="(([a-zA-Z]:)|(\\{2}\w+)\$?)(\\(\w[\w].*))+(.pdf|.xls|.xlsx|.doc|.docx|.jpeg|.jpg|.tif|.msg|.ppt|.pptx|.PDF|.XLS|.XLSX|.DOC|.DOCX|.JPEG|.JPG|.TIF|.MSG|.PPT|.PPTX)$" ControlToValidate="uploadFile" ValidationGroup="vsSupportingDocuments" Font-Bold="True"
+                                Font-Size="Small" /><br />
+                            <asp:Label ID="lblMessage" runat="server" Font-Bold="True" ForeColor="Red" Height="16px"
+                                Text="Label" Visible="False" Width="368px" Font-Size="Small" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <asp:Button ID="Button1" runat="server" Text="Upload" CausesValidation="true" ValidationGroup="vgSupportingDocs" />
+                        </td>
+                    </tr>
+                </table>
+                <asp:GridView runat="server" ID="gvSupportingDocument" AutoGenerateColumns="False" DataSourceID="odsSupportingDoc" DataKeyNames="RowID" Width="60%" SkinID="StandardGridWOFooter">
+                    <Columns>
+                        <asp:BoundField HeaderText="File Description" DataField="SupportingDocDesc">
+                            <ControlStyle Font-Size="X-Small" />
+                        </asp:BoundField>
+                        <asp:BoundField HeaderText="Supporting Document Name" DataField="SupportingDocName">
+                            <ControlStyle Font-Size="X-Small" />
+                        </asp:BoundField>
+                        <asp:TemplateField>
+                            <ItemTemplate>
+                                <asp:HyperLink runat="server" ID="hlnkPreview" ImageUrl='<%# DisplayImage(DataBinder.Eval(Container, "DataItem.SupportingDocEncodeType").tostring)  %>' NavigateUrl='<%# "TestIssuance_Document.aspx?RequestID=" & DataBinder.Eval(Container.DataItem, "RequestID").ToString & "&RowID=" & DataBinder.Eval(Container.DataItem, "RowID").ToString%>'
+                                    Target="_blank" ToolTip="Preview" ForeColor="white" />
+                            </ItemTemplate>
+                            <ItemStyle HorizontalAlign="Center" />
+                        </asp:TemplateField>
+                        <asp:TemplateField>
+                            <ItemTemplate>
+                                <asp:ImageButton ID="ibtnSupportingDocDelete" runat="server" CausesValidation="False"
+                                    CommandName="Delete" ImageUrl="~/images/delete.jpg" AlternateText="Delete" OnClientClick="return confirm('Are you sure you want to delete this item?');" />
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                    </Columns>
                 </asp:GridView>
-                <%--<asp:ObjectDataSource ID="odsSupportingDocument" runat="server" DeleteMethod="DeleteARDeductionDocuments"
-                    OldValuesParameterFormatString="original_{0}" SelectMethod="GetARDeductionDocuments"
-                    TypeName="ARDeductionBLL">
+                <asp:ObjectDataSource ID="odsSupportingDoc" runat="server" OldValuesParameterFormatString="original_{0}"
+                    SelectMethod="GetTestIssuanceSupportingDoc" TypeName="RnDBLL" InsertMethod="InsertTestIssuanceAssignments" DeleteMethod="DeleteTestIssuanceSupportingDoc">
                     <DeleteParameters>
-                        <asp:Parameter Name="Original_ARDID" Type="Int32" />
-                        <asp:Parameter Name="Original_DocID" Type="Int32" />
+                        <asp:Parameter Name="RequestID" Type="Int32" />
+                        <asp:Parameter Name="original_RowID" Type="Int32" />
                     </DeleteParameters>
+                    <InsertParameters>
+                        <asp:Parameter Name="RequestID" Type="Int32" />
+                        <asp:Parameter Name="TeamMemberID" Type="Int32" />
+                    </InsertParameters>
                     <SelectParameters>
-                        <asp:QueryStringParameter Name="ARDID" QueryStringField="pARDID" Type="Int32" />
-                        <asp:Parameter Name="DocID" Type="Int32" />
-                        <asp:Parameter Name="MaxDateOfUpload" Type="Boolean" />
+                        <asp:QueryStringParameter DefaultValue="0" Name="RequestID" QueryStringField="pReqID" Type="Int32" />
                     </SelectParameters>
-                </asp:ObjectDataSource>--%>
+                </asp:ObjectDataSource>
+                <asp:ValidationSummary ID="vsSupportingDocs" runat="server" DisplayMode="List" ShowMessageBox="true" ShowSummary="true" EnableClientScript="true" ValidationGroup="vgSupportingDocs" ForeColor="red" />
             </asp:View>
+
     </asp:MultiView>
 </asp:Content>

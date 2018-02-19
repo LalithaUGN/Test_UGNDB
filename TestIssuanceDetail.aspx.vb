@@ -4,8 +4,15 @@
 '           Applied gridview and detailsview events.
 '
 ' Date		    Author	    
-' 02/07/2018    LJampana			Created .Net application
-
+' 02/24/2009    LRey			Created .Net application
+' 07/09/2010    RCarlson        Modified: Ref# (RD-2930) - allow PDF files in which both UPPER case and lower case PDF extentions can be used
+' 08/16/2010    RCarlson        Modified: Updated Parameters to GetFormula in BindCriteria
+' 09/21/2011    RCarlson        Modified: Adjusted ddDesignationType_SelectedIndexChanged if ds returns nothing
+' 12/04/2012    RCarlson        Modified: Added Produect Development Subscrtion (5) to parameter of commonfunctions.GetTeamMemberByWorkFlowAssignments function
+' 01/17/2013    RCarlson        Modified: Changed DMS Drawing Dropdown to textbox with validation on save
+' 02/26/2013    RCarlson        Modified: Make sure DMS DrawingNo is valid
+' 01/30/2014  LRey    Replaced SoldTo|CABBV with a RowID next sequential. 
+'                     Added CostSheetID per RD-3267 support request.
 ' ************************************************************************************************
 Imports System.Net.Mail
 Imports System.Web.UI.WebControls
@@ -2053,10 +2060,79 @@ Public Class TestIssuanceDetail
 #End Region 'EOF Email Notification
 
 #Region "Supporting Documents"
-    'Protected Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+    Protected Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Try
+            'System.Threading.Thread.Sleep(3000)
+            Dim DefaultDate As Date = Date.Now
 
-    'End Sub 
+            If ViewState("pReqID") > 0 Then
 
-#End Region 'EOF "Supporting Documents"
-    
+
+                If uploadFileTest.HasFile Then
+                    If uploadFileTest.PostedFile.ContentLength <= 3500000 Then
+                        Dim FileExt As String
+                        FileExt = System.IO.Path.GetExtension(uploadFileTest.FileName).ToLower
+                        Dim pat As String = "\\(?:.+)\\(.+)\.(.+)"
+                        Dim r As Regex = New Regex(pat)
+                        Dim m As Match = r.Match(uploadFileTest.PostedFile.FileName)
+
+                        '** With use of MS Office 2007 or higher **/
+                        Dim SupportingDocFileSize As Integer = Convert.ToInt32(uploadFileTest.PostedFile.InputStream.Length)
+                        Dim SupportingDocEncodeType As String = uploadFileTest.PostedFile.ContentType
+                        Dim SupportingDocBinaryFile As [Byte]() = New [Byte](SupportingDocFileSize) {}
+                        uploadFileTest.PostedFile.InputStream.Read(SupportingDocBinaryFile, 0, SupportingDocFileSize)
+
+                        If (FileExt = ".pdf") Or (FileExt = ".xls") Or (FileExt = ".doc") Or (FileExt = ".xlsx") Or (FileExt = ".docx") Then
+                            ''*************
+                            '' Display File Info
+                            ''*************
+                            If SupportingDocEncodeType = "application/octet-stream" Then
+                                lblMessageView4.Text = "Error with File: " & uploadFileTest.FileName & " upload. <br/>" & _
+                               "Unknown File Type. Please try again.<br/>"
+                                lblMessageView4.Visible = True
+                                lblMessageView4.Width = 500
+                                lblMessageView4.Height = 30
+
+                            Else
+                                lblMessageView4.Text = "File name: " & uploadFileTest.FileName & "<br/>" & _
+                                "File Size: " & CType((SupportingDocFileSize / 1024), Integer) & " KB<br/>"
+                                lblMessageView4.Visible = True
+                                lblMessageView4.Width = 500
+                                lblMessageView4.Height = 30
+
+                                ''***************
+                                '' Insert Record
+                                ''***************
+                                RnDModule.InsertTestIssuanceSupportingDocument(ViewState("pReqID"), uploadFileTest.FileName, txtSupportingDocDesc.Text.Trim, SupportingDocBinaryFile, SupportingDocFileSize, SupportingDocEncodeType)
+                            End If
+
+                            gvSupportingDocument.DataBind()
+                            '' revUploadFileTest = False
+                            txtSupportingDocDesc.Text = Nothing
+
+                            '' mvTabs.ActiveViewIndex = Int32.Parse(1)
+                            ''  mvTabs.GetActiveView()
+                            ''   mnuTabs.Items(1).Selected = True
+                        End If
+                    Else
+                        lblMessageView4.Text = "File exceeds size limit.  Please select a file less than 4MB (4000KB)."
+                        lblMessageView4.Visible = True
+                        uploadFileTest.Enabled = False
+                    End If
+                End If
+            End If
+        Catch ex As Exception
+            'update error on web page
+            lblMessage.Text = ex.Message
+
+            'get current event name
+            Dim mb As Reflection.MethodBase = Reflection.MethodBase.GetCurrentMethod
+
+            'log and email error
+            UGNErrorTrapping.UpdateUGNErrorLog(mb.Name & ":" & ex.Message, System.Web.HttpContext.Current.Request.Url.AbsolutePath)
+        End Try
+
+    End Sub
+#End Region
+   
 End Class
